@@ -8,7 +8,7 @@ defmodule Bandsaw.Backend do
   defstruct server:     nil,
             app_id:     nil,
             app_key:    nil,
-            app_env:    nil,
+            app_env_id: nil,
             buffer:     :queue.new(),
             max_buffer: nil,
             level:      nil,
@@ -67,7 +67,7 @@ defmodule Bandsaw.Backend do
       | server:     Keyword.get(options, :server,     state.server),
         app_id:     Keyword.get(options, :app_id,     state.app_id),
         app_key:    Keyword.get(options, :app_key,    state.app_key),
-        app_env:    Keyword.get(options, :app_env,    state.app_env),
+        app_env_id: Keyword.get(options, :app_env_id, state.app_env_id),
         max_buffer: Keyword.get(options, :max_buffer, 3),
         level:      Keyword.get(options, :level),
         flush:      Keyword.get(options, :flush,      1_000)
@@ -99,8 +99,13 @@ defmodule Bandsaw.Backend do
   #
   # Return a list of headers to be included in a request to the bandsaw server
   #
-  defp headers(%__MODULE__{app_id: id, app_key: key, app_env: env}),
-    do: [{"Content-Type", "application/json"}, {"x-application-id", id}, {"x-application-key", key}, {"x-application-env", env}]
+  defp headers(%__MODULE__{app_id: id, app_key: key, app_env_id: env}),
+    do: [
+      {"Content-Type",      "application/json"},
+      {"x-application-id",  id},
+      {"x-application-key", key},
+      {"x-application-env", env}
+    ]
   defp headers(_state),
     do: [{"Content-Type", "application/json"}]
 
